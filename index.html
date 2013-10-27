@@ -1,0 +1,37 @@
+<!doctype html style="height:100%">
+<html lang="en" ng-app="myApp">
+<head>
+  <meta charset="utf-8">
+  <title>Pie chart demo</title>
+  <!--<link rel="stylesheet" href="css/pie-chart.css"/>-->
+</head>
+<body ng-controller="DemoCtrl">
+  <div style="border: 1px solid; height: 500px; width: 500px;">
+    <pie-chart data='data' options='options'></pie-chart>
+  </div>
+  
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/d3/d3.min.js"></script>
+  <script src="dist/pie-chart.min.js"></script>
+  <script>
+    angular.module('myApp', ['n3-pie-chart'])
+    
+    .controller('DemoCtrl', function($scope) {
+      
+      var colors = d3.scale.category10();
+      
+      $scope.data = [
+        {label: "one", value: 20, color: colors(0)}, 
+        {label: "two", value: 50, color: colors(1)}, 
+        {label: "three", value: 30, color: colors(2)},
+        {label: "three", value: 30, color: colors(3)},
+        {label: "three", value: 30, color: colors(4)},
+        {label: "three", value: 30, color: colors(5)}
+      ];
+      
+      $scope.options = {};
+      
+    })
+  </script>
+</body>
+</html>

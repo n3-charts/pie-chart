@@ -1,0 +1,2 @@
+describe('n3-pie-chart', function() {
+  'use strict'

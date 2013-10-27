@@ -1,4 +1,4 @@
 pie-chart
 =========
 
-Awesome pie charts for AngularJS
+A pie chart implementation
