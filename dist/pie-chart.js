@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-10-27
+/*! pie-chart - v1.0.0 - 2013-10-29
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
@@ -28,7 +28,6 @@ angular.module('n3-pie-chart', ['n3-pie-utils'])
       }
 
       var svg = $utils.bootstrap(element[0], dimensions);
-      $utils.addTooltip(svg);
 
       $utils.draw(svg, data, dimensions);
     };

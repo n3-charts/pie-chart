@@ -14,7 +14,7 @@ files = [
   'bower_components/angular-mocks/angular-mocks.js',
   'bower_components/d3/d3.js',
   'dist/pie-chart.min.js',
-  '/tmp/pie-chart.spec.js'
+  'dist/pie-chart.spec.js'
 ];
 
 preprocessors = {
