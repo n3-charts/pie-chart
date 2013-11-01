@@ -3,19 +3,9 @@
 /*global window */
 
 describe('n3-piechart', function() {
-  var elm, scope, isolatedScope;
+  var elm, $scope, isolatedScope;
 
   beforeEach(module('n3-pie-chart'));
-
-  beforeEach(inject(function($rootScope, $compile) {
-    elm = angular.element('<div id="toto">' +
-      '<pie-chart data="data" options="options"></pie-chart>' +
-      '</div>');
-
-    scope = $rootScope;
-    $compile(elm)(scope);
-    scope.$digest();
-  }));
 
   beforeEach(function() {
     this.addMatchers({

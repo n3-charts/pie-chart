@@ -3,16 +3,49 @@
 <head>
   <meta charset="utf-8">
   <title>Pie chart demo</title>
-  <!--<link rel="stylesheet" href="css/pie-chart.css"/>-->
+  <link rel="stylesheet" href="css/kube.min.css"/>
+  <link rel="stylesheet" href="css/pie-chart.css"/>
 </head>
 <body ng-controller="DemoCtrl">
-  <div style="border: 1px solid; height: 500px; width: 500px;">
-    <pie-chart data='data' options='options'></pie-chart>
+  <div class="units-row unit-100">
+    <div class="un-10">
+      <pie-chart data='data' options='options'></pie-chart>
+    </div>
+    <div class="un-20">
+      <pie-chart data='data' options='options'></pie-chart>
+    </div>
+    <div class="un-30">
+      <pie-chart data='data' options='options'></pie-chart>
+    </div>
+    <div class="un-40">
+      <pie-chart data='data' options='options'></pie-chart>
+    </div>
+    <div class="un-50">
+      <pie-chart data='data' options='options'></pie-chart>
+    </div>
   </div>
   
-  <script src="bower_components/angular/angular.min.js"></script>
+  <div class="units-row unit-100">
+    <div class="un-10">
+      <pie-chart data='gauge_data' options='gauge_options'></pie-chart>
+    </div>
+    <div class="un-20">
+      <pie-chart data='gauge_data' options='gauge_options'></pie-chart>
+    </div>
+    <div class="un-30">
+      <pie-chart data='gauge_data' options='gauge_options'></pie-chart>
+    </div>
+    <div class="un-40">
+      <pie-chart data='gauge_data' options='gauge_options'></pie-chart>
+    </div>
+    <div class="un-50">
+      <pie-chart data='gauge_data' options='gauge_options'></pie-chart>
+    </div>
+  </div>
+  
+  <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/d3/d3.min.js"></script>
-  <script src="dist/pie-chart.min.js"></script>
+  <script src="dist/pie-chart.js"></script>
   <script>
     angular.module('myApp', ['n3-pie-chart'])
     
@@ -27,7 +60,14 @@
         {label: "Fourth series", value: 50, color: colors(3)}
       ];
       
-      $scope.options = {};
+      $scope.options = {thickness: 20};
+      
+      $scope.gauge_data = [
+        {label: "one", value: 75, color: "steelblue"}, 
+        {label: "two", value: 15, color: "lightgrey"},
+      ];
+      
+      $scope.gauge_options = {thickness: 5};
       
     })
   </script>

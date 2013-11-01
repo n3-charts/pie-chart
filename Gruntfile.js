@@ -24,7 +24,10 @@ module.exports = function(grunt) {
 
     watch: {
       files: ['lib/**/*.js', 'test/*.spec.js'],
-      tasks: ['jshint', 'concat', 'uglify', 'karma:continuous']
+      tasks: ['jshint', 'concat', 'uglify', 'karma:continuous'],
+      options: {
+        livereload: true,
+      }
     },
 
     karma: {
@@ -56,8 +59,8 @@ module.exports = function(grunt) {
         src: ['lib/utils/*.js'],
         dest: '/tmp/utils.js',
         options: {
-          banner: grunt.file.read('lib/utils/utils.js.prefix'),
-          footer: grunt.file.read('lib/utils/utils.js.suffix'),
+          banner: grunt.file.read('lib/utils/utils.header'),
+          footer: grunt.file.read('lib/utils/utils.footer'),
           separator: ',\n\n'
         }
       },
@@ -66,7 +69,7 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.js'
       },
       test: {
-        src: ['test/spec.prefix', 'test/*.spec.js' ,'test/spec.suffix'],
+        src: ['test/spec.header', 'test/*.spec.js' ,'test/spec.footer'],
         dest: 'dist/<%= pkg.name %>.spec.js'
       }
     },
