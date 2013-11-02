@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-01
+/*! pie-chart - v1.0.0 - 2013-11-02
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
@@ -14,8 +14,6 @@ angular.module('n3-pie-chart', ['n3-pie-utils'])
 
     var update = function() {
       $utils.clean(element[0]);
-
-
       updateDimensions(dim);
       redraw(dim);
     };
@@ -28,6 +26,7 @@ angular.module('n3-pie-chart', ['n3-pie-utils'])
         return;
       }
 
+      options = $utils.sanitizeOptions(options);
       data = data.concat(); // this avoids calling again the $watchers since
                             // data is changed by the pie layout...
 
@@ -69,13 +68,17 @@ angular.module('n3-pie-utils', [])
     .value(function(d) { return d.value; });
 
 
-  var g = svg.selectAll(".arc")
+  var g = svg.append("g")
+    .attr({
+      "id": "n3-pie-arcs"
+    })
+    .selectAll(".arc")
     .data(pie(data.concat()))
     .enter().append("g")
-    .attr({
-      "class": "arc",
-      "id": function(d, i) {return "arc_" + i;}
-    });
+      .attr({
+        "class": "arc",
+        "id": function(d, i) {return "arc_" + i;}
+      });
 
   g.append("path")
     .attr({
@@ -93,37 +96,33 @@ angular.module('n3-pie-utils', [])
 addLegend: function(svg, data, dimensions, options) {
   var yOffset = Math.floor(data.length/2);
   
-  var items = svg.selectAll(".legend-item")
+  var items = svg.append("g")
+    .attr({
+      "id": "n3-pie-legend"
+    })
+    .selectAll(".legend-item")
     .data(data.sort(function(a, b) {return b.value - a.value;}))
     .enter().append("g")
-    .classed("legend-item", true)
-    .style({
-      "fill": function(d) {return d.color;},
-      "fill-opacity": 0.8,
-    })
-    .attr({
-      "transform": function(d, i) {
-        return "translate(0, " + (i - yOffset)*15 + ")";
-      }
-    })
-    .on("mouseover", this.onMouseOver(svg))
-    .on("mouseout", this.onMouseOut(svg))
+      .classed("legend-item", true)
+      .style({
+        "fill": function(d) {return d.color;},
+        "fill-opacity": 0.8,
+      })
+      .attr({
+        "transform": function(d, i) {
+          return "translate(0, " + (i - yOffset)*15 + ")";
+        }
+      })
+      .on("mouseover", this.onMouseOver(svg))
+      .on("mouseout", this.onMouseOut(svg))
   ;
 
   var that = this;
   var radius = this.getRadius(dimensions);
-  var availableWidth = dimensions.width - (radius - options.thickness)*2;
+  var availableWidth = radius - options.thickness*2;
   
   var text = items.append("text")
-    .text(function(d) {
-      if (availableWidth < 100) {
-        return "";
-      } else if (availableWidth < 150) {
-        return d.label;
-      }
-      
-      return that.getLegendLabel(d.label, d.value, 20);
-    })
+    .text(this.getLegendLabelFunction(availableWidth))
     .attr({
       "text-anchor": "middle",
       "x": "0px",
@@ -132,6 +131,20 @@ addLegend: function(svg, data, dimensions, options) {
     .style({
       "font-family": "monospace"
     })
+},
+
+getLegendLabelFunction: function(availableWidth) {
+  var that = this;
+  
+  return function(datum, index) {
+    if (availableWidth < 40) {
+      return "";
+    } else if (availableWidth < 100) {
+      return datum.label;
+    }
+    
+    return that.getLegendLabel(datum.label, datum.value, 20);
+  }
 },
 
 onMouseOver: function(svg) {
@@ -176,7 +189,7 @@ getLegendLabel: function(label, value, totalLength) {
 },
 
 getDefaultMargins: function() {
-  return {top: 20, right: 50, bottom: 30, left: 50};
+  return {top: 10, right: 10, bottom: 10, left: 10};
 },
 
 clean: function(element) {
@@ -208,11 +221,6 @@ getRadius: function(dimensions) {
     (d.width - d.left - d.right),
     (d.height - d.top - d.bottom)
   )*.5;
-},
-
-createContent: function(svg) {
-  svg.append('g')
-  .attr('class', 'content');
 },
 
 sanitizeOptions: function(options) {

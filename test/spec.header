@@ -3,8 +3,6 @@
 /*global window */
 
 describe('n3-piechart', function() {
-  var elm, $scope, isolatedScope;
-
   beforeEach(module('n3-pie-chart'));
 
   beforeEach(function() {

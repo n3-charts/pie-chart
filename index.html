@@ -20,9 +20,9 @@
     <div class="un-40">
       <pie-chart data='data' options='options'></pie-chart>
     </div>
-    <div class="un-50">
+    <!-- <div class="un-50">
       <pie-chart data='data' options='options'></pie-chart>
-    </div>
+    </div> -->
   </div>
   
   <div class="units-row unit-100">
@@ -38,9 +38,9 @@
     <div class="un-40">
       <pie-chart data='gauge_data' options='gauge_options'></pie-chart>
     </div>
-    <div class="un-50">
+    <!-- <div class="un-50">
       <pie-chart data='gauge_data' options='gauge_options'></pie-chart>
-    </div>
+    </div> -->
   </div>
   
   <script src="bower_components/angular/angular.js"></script>
@@ -63,12 +63,16 @@
       $scope.options = {thickness: 20};
       
       $scope.gauge_data = [
-        {label: "one", value: 75, color: "steelblue"}, 
-        {label: "two", value: 15, color: "lightgrey"},
+        {label: "CPU", value: 75, color: "steelblue"},
+        {label: "fill", value: 25, color: "white"}
       ];
       
-      $scope.gauge_options = {thickness: 5};
+      $scope.gauge_options = {mode: "gauge", total: 100, thickness: 5};
       
+      // setInterval(function() {
+      //   $scope.gauge_data[0].value = parseInt(Math.random()*100);
+      //   $scope.$apply();
+      // }, 1000)
     })
   </script>
 </body>
