@@ -58,7 +58,6 @@ angular.module('n3-pie-utils', [])
 .factory('$utils', [function() {
   return {draw: function(svg, data, dimensions, options) {
   var radius = this.getRadius(dimensions);
-  // console.log(radius, options.thickness);
 
   var arc = d3.svg.arc()
     .outerRadius(radius)
@@ -73,7 +72,7 @@ angular.module('n3-pie-utils', [])
       "id": "n3-pie-arcs"
     })
     .selectAll(".arc")
-    .data(pie(data.concat()))
+    .data(pie(data))
     .enter().append("g")
       .attr({
         "class": "arc",
@@ -85,10 +84,16 @@ angular.module('n3-pie-utils', [])
       "d": arc
     })
     .style({
-      // "stroke": "white",
       "fill": function(d) {return d.data.color;},
       "fill-opacity": 0.8
     });
+  
+  g.append("text")
+    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+    .attr("dy", ".35em")
+    .attr("text-anchor", "middle")
+    .text(function(d, i) { return i; });
+    
   
   return this;
 },
@@ -101,7 +106,7 @@ addLegend: function(svg, data, dimensions, options) {
       "id": "n3-pie-legend"
     })
     .selectAll(".legend-item")
-    .data(data.sort(function(a, b) {return b.value - a.value;}))
+    .data(data)
     .enter().append("g")
       .classed("legend-item", true)
       .style({
