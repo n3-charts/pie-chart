@@ -88,13 +88,6 @@ angular.module('n3-pie-utils', [])
       "fill-opacity": 0.8
     });
   
-  g.append("text")
-    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-    .attr("dy", ".35em")
-    .attr("text-anchor", "middle")
-    .text(function(d, i) { return i; });
-    
-  
   return this;
 },
 
