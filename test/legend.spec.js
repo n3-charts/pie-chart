@@ -71,10 +71,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        {transform: "translate(0, -30)", style: "fill: #123456; fill-opacity: 0.8;"},
+        {transform: "translate(0, -30)", style: "fill: #ff0000; fill-opacity: 0.8;"},
         {transform: "translate(0, -15)", style: "fill: #0a182d; fill-opacity: 0.8;"},
-        {transform: "translate(0, 0)", style: "fill: #ff0000; fill-opacity: 0.8;"},
-        {transform: "translate(0, 15)", style: "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;"}
+        {transform: "translate(0, 0)", style: "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;"},
+        {transform: "translate(0, 15)", style: "fill: #123456; fill-opacity: 0.8;"}
       ];
       
       expected.forEach(function(d, i) {
@@ -88,10 +88,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "Fourth series ... 50", style: "font-family: monospace;"},
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "two ............. 45", style: "font-family: monospace;"},
         {x: "0px", y: "15px", "text-anchor": "middle", content: "one ........... 12.2", style: "font-family: monospace;"},
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "three ........... 10", style: "font-family: monospace;"}
+        {x: "0px", y: "15px", "text-anchor": "middle", content: "two ............. 45", style: "font-family: monospace;"},
+        {x: "0px", y: "15px", "text-anchor": "middle", content: "three ........... 10", style: "font-family: monospace;"},
+        {x: "0px", y: "15px", "text-anchor": "middle", content: "Fourth series ... 50", style: "font-family: monospace;"}
       ];
       
       var p = function(i) {return legendItems[i].childNodes[0];};
@@ -106,19 +106,27 @@ describe("legend", function() {
     });
 
     it("should call mouseover", inject(function($utils) {
+      var arcs = content.childNodes[0].childNodes;
       var legendItems = content.childNodes[1].childNodes;
       
-      var expected = [
-        "fill: #123456; fill-opacity: 0.8; opacity: 0.4;",
-        "fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
-        "fill: #ff0000; fill-opacity: 0.8; opacity: 0.4;",
-        "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;"
+      var expectedLegends = [
+        "fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
+        "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
+        "fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
+      ];
+      
+      var expectedArcs = [
+        {id: "arc_0", style: "opacity: 1;"},
+        {id: "arc_1", style: "opacity: 0.4;"},
+        {id: "arc_2", style: "opacity: 0.4;"},
+        {id: "arc_3", style: "opacity: 0.4;"}
       ];
       
       runs(function () {
         var e = document.createEvent("MouseEvents");
         e.initMouseEvent("mouseover");
-        legendItems[1].dispatchEvent(e);
+        legendItems[0].dispatchEvent(e);
       });
       
       // There is a transition we have to wait for.
@@ -126,33 +134,53 @@ describe("legend", function() {
       waits(50);
 
       runs(function () {
-        expected.forEach(function(d, i) {
+        expectedLegends.forEach(function(d, i) {
           expect(legendItems[i].getAttribute("style").trim()).toBeSameStyleAs(d);
+        });
+        
+        expectedArcs.forEach(function(d, i) {
+          expect(arcs[i].getAttribute("style").trim()).toBeSameStyleAs(d.style);
+          expect(arcs[i].getAttribute("id")).toBe(d.id);
         });
       });
     }));
     
     it("should call mouseout", inject(function($utils) {
+      var arcs = content.childNodes[0].childNodes;
       var legendItems = content.childNodes[1].childNodes;
       
-      var expected = [
-        "fill: #123456; fill-opacity: 0.8; opacity: 1;",
-        "fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
+      var expectedLegends = [
         "fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;"
+        "fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
+        "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
+        "fill: #123456; fill-opacity: 0.8; opacity: 1;"
+      ];
+      
+      var expectedArcs = [
+        {id: "arc_0", style: "opacity: 1;"},
+        {id: "arc_1", style: "opacity: 1;"},
+        {id: "arc_2", style: "opacity: 1;"},
+        {id: "arc_3", style: "opacity: 1;"}
       ];
       
       runs(function () {
         var e = document.createEvent("MouseEvents");
         e.initMouseEvent("mouseout");
-        legendItems[1].dispatchEvent(e);
+        legendItems[0].dispatchEvent(e);
       });
       
+      // There is a transition we have to wait for.
+      // BTW : Jasmine is awesome.
       waits(50);
 
       runs(function () {
-        expected.forEach(function(d, i) {
+        expectedLegends.forEach(function(d, i) {
           expect(legendItems[i].getAttribute("style").trim()).toBeSameStyleAs(d);
+        });
+        
+        expectedArcs.forEach(function(d, i) {
+          expect(arcs[i].getAttribute("style").trim()).toBeSameStyleAs(d.style);
+          expect(arcs[i].getAttribute("id")).toBe(d.id);
         });
       });
     }));
