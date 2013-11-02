@@ -27,7 +27,7 @@ angular.module('n3-pie-chart', ['n3-pie-utils'])
       }
 
       options = $utils.sanitizeOptions(options);
-      data = data.concat(); // this avoids calling again the $watchers since
+      // data = data.concat(); // this avoids calling again the $watchers since
                             // data is changed by the pie layout...
 
       var svg = $utils.bootstrap(element[0], dimensions);
@@ -151,7 +151,9 @@ onMouseOver: function(svg) {
   return function(datum, index) {
     var dimOrHighlight = function(element) {
       return element.transition().duration(50).style({
-        "opacity": function(d, i) {return i === index ? "1" : "0.4";}
+        "opacity": function(d, i) {
+          return i === index ? "1" : "0.4";
+        }
       });
     }
     

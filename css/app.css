@@ -1,0 +1,68 @@
+body {
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* HEADER */
+#header {
+  padding-top: 15px;
+  margin-bottom: .6em;
+}
+#header h1 {
+  float: left;
+  font-size: 32px;
+  margin-top: 1px;
+  margin-bottom: 0;
+  color: rgba(0, 0, 0, .8);
+}
+#header nav {
+  margin-top: 1.2em;
+  margin-bottom: 0;
+  float: right;
+}
+
+#header>h1>a {
+  text-decoration: none;
+  color: #48AB4D;
+}
+
+#header>h1>a>img {
+  vertical-align: middle;
+}
+
+/* HOME */
+
+.preview-chart {
+  height: 200px;
+  border: 1px solid #CECECE;
+  box-shadow: 6px 6px 10px #DDD;
+  margin-bottom: 30px;
+}
+
+/* THUMBNAIL */
+.mini-chart {
+  height: 100px;
+  border: 1px solid #CECECE;
+}
+
+.thumbnail {
+  box-shadow: 6px 6px 10px #DDD;
+  height: 600px;
+  padding: 10px;
+  border: 1px solid #CECECE;
+}
+
+.thumbnail .chart {
+  height: 100%;
+}
+
+.thumbnail .options {
+  padding: 10px;
+  height: 500px;
+  border-left: 1px solid #CECECE;
+  height: 100%;
+}
+
+.thumbnail .options > pre {
+  font-size: 10px;
+}

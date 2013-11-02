@@ -1,0 +1,34 @@
+
+  <div class='unit-100'>
+    <h3>Thumbnail mode</h3>
+    <h3 class='subheader'>The chart can be configured to display only data (this is called the thumbnail mode). This is convenient for dashboards, sparklines...</h3>
+  </div>
+<div class='units-row'>
+  <div class='unit-50'>
+    <div class="unit-20 mini-chart" ng-repeat='example in miniExamples.slice(0, 5)'>
+      <linechart data='example.data' options='example.options' mode='thumbnail'></linechart>
+    </div>
+  </div>
+  <div class='unit-50'>
+    <div class="unit-20 mini-chart" ng-repeat='example in miniExamples.slice(5)'>
+      <linechart data='example.data' options='example.options' mode='thumbnail'></linechart>
+    </div>
+  </div>
+</div>
+</div>
+<div class='units-row' ng-repeat='example in examples'>
+  <div class='unit-100'>
+    <h3>{{example.label}}</h3>
+    <h3 class='subheader'>{{example.description}}</h3>
+  </div>
+  <div class='units-row units-split thumbnail'>
+    <div class='unit-60 chart'>
+      <linechart data='example.data' options='example.options'></linechart>
+    </div>
+    <div class='unit-40 options'>
+      <pre ng-bind-html-unsafe='"$scope.options = " + (example.options | pretty) + ";"'></pre>
+      <pre style="height: 30%;" ng-bind-html-unsafe='"$scope.data = " + (example.data | pretty:1) + ";"'></pre>
+      <input type="range" min="2" max="{{max}}" ng-model="example.visibleRows" ng-change="crop(example)"/>
+    </div>
+  </div>
+</div>

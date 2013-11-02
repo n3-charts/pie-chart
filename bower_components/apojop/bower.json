@@ -1,0 +1,23 @@
+{
+  "name": "apojop",
+  "version": "1.0.3-beta",
+  "main": "apojop.min.js",
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "coverage",
+    "node_modules",
+    "src",
+    "test",
+    "Gruntfile.js",
+    "karma.conf.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "angular": "~1.0.6"
+  },
+  "devDependencies": {
+    "angular": "~1.0.6",
+    "angular-mocks": "~1.0.6"
+  }
+}
