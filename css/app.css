@@ -39,6 +39,10 @@ body {
   margin-bottom: 30px;
 }
 
+.tiny-chart {
+  height: 50px;
+}
+
 /* THUMBNAIL */
 .mini-chart {
   height: 100px;
