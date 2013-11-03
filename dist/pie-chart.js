@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-02
+/*! pie-chart - v1.0.0 - 2013-11-03
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
@@ -57,11 +57,12 @@ angular.module('n3-pie-utils', [])
 
 .factory('$utils', [function() {
   return {draw: function(svg, data, dimensions, options) {
-  var radius = this.getRadius(dimensions);
+  var outerRadius = this.getRadius(dimensions);
+  var innerRadius = Math.max(outerRadius - options.thickness, 0);
 
   var arc = d3.svg.arc()
-    .outerRadius(radius)
-    .innerRadius(radius - options.thickness);
+    .outerRadius(outerRadius)
+    .innerRadius(innerRadius);
 
   var pie = d3.layout.pie()
     .value(function(d) { return d.value; });
