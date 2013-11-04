@@ -3,7 +3,7 @@
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
 
-.directive('pieChart', ['$utils', '$window', function($utils, $window) {
+.directive('pieChart', ['$utils', function($utils) {
   var link  = function($scope, element, attrs, ctrl) {
     var svg;
     var dim = $utils.getDefaultMargins();
@@ -47,10 +47,6 @@ angular.module('n3-pie-chart', ['n3-pie-utils'])
         .addLegend(svg)
         .updateLegend(svg, data, dimensions, options)
       ;
-    };
-
-    $window.onresize = function() {
-      hard_update();
     };
 
     $scope.$watch('data', function(newValue, oldValue) {
@@ -177,16 +173,17 @@ updateLegend: function(svg, data, dimensions, options) {
 },
 
 updateRegularLegend: function(svg, data, dimensions, options) {
-  var legendHalfHeight = data.length*5;
+  var that = this;
+  var radius = this.getRadius(dimensions);
+  var availableWidth = radius - options.thickness;
+  
+  var legendHalfHeight = data.length*Math.max(12, availableWidth/10);
   
   var scale = d3.scale.linear()
     .range([-legendHalfHeight, legendHalfHeight])
     .domain([0, data.length-1])
     .nice()
   
-  var that = this;
-  var radius = this.getRadius(dimensions);
-  var availableWidth = radius - options.thickness*2;
   
   var items = svg.selectAll("#n3-pie-legend")
     .selectAll(".legend-item")
@@ -208,6 +205,7 @@ updateRegularLegend: function(svg, data, dimensions, options) {
     })
     .style({
       "font-family": "monospace",
+      "font-size": Math.max(12, availableWidth/10) + "px",
       "fill": function(d) {return d.color;},
       "fill-opacity": 0.8
     });
@@ -216,7 +214,11 @@ updateRegularLegend: function(svg, data, dimensions, options) {
 },
 
 updateGaugeLegend: function(svg, data, dimensions, options) {
-  var availableWidth = this.getRadius(dimensions) - options.thickness*2;
+  var size = (this.getRadius(dimensions) - options.thickness)/2;
+  
+  if (size < 0) {
+    return;
+  }
   
   svg.selectAll("#n3-pie-legend > *").remove();
   
@@ -225,10 +227,10 @@ updateGaugeLegend: function(svg, data, dimensions, options) {
     .attr({
       "class": "legend-title",
       "text-anchor": "middle",
-      "y": -availableWidth/2 + "px"
+      "y": -size/4 + "px"
     })
     .style({
-      "font-size": Math.min(availableWidth/2, 20) + "px",
+      "font-size": Math.max(size/2, 12) + "px",
       "fill": data[0].color,
       "fill-opacity": 0.8
     })
@@ -240,14 +242,14 @@ updateGaugeLegend: function(svg, data, dimensions, options) {
     .attr({
       "class": "legend-value",
       "text-anchor": "middle",
-      "y": availableWidth/2 + "px" 
+      "y": size/1.5 + "px" 
     })
     .style({
-      "font-size": availableWidth + "px",
+      "font-size": size + "px",
       "fill": data[0].color,
       "fill-opacity": 0.8
     })
-    .text(data[0].value)
+    .text(data[0].value + (data[0].suffix || ''))
     ;
 },
 
