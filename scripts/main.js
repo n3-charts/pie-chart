@@ -21,10 +21,16 @@ angular.module('demo.main', ['n3-pie-chart'])
   $scope.options = {thickness: 10};
   
   $scope.gauge_data = [
-    {label: "one", value: 75, color: "steelblue"},
-    {label: "two", value: 25, color: "white"}
+    {label: "CPU", value: 75, color: "steelblue"}
   ];
-  $scope.gauge_options = {thickness: 10, mode: "gauge", total: 100};
+  $scope.gauge_options = {thickness: 5, mode: "gauge", total: 100};
+  
+  setInterval(function() {
+    $scope.gauge_data[0].value = parseInt(Math.random()*100);
+    $scope.$apply();
+  }, 2000);
+  
+  $scope.pie_options = {thickness: 100};
 })
 
 ;
