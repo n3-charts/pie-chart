@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-03
+/*! pie-chart - v1.0.0 - 2013-11-04
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 'use strict';
@@ -47,10 +47,14 @@ describe('n3-piechart', function() {
     });
   });
 
-describe('directive', function() {
+describe("gauge mode", function() {
+  beforeEach(inject(function($utils) {
+    spyOn($utils, 'getDefaultMargins').andReturn(
+      {top: 20, right: 50, bottom: 30, left: 50}
+    );
+  }));
   
   var elm, $scope, isolatedScope;
-  
   beforeEach(inject(function($rootScope, $compile) {
     elm = angular.element('<div id="toto">' +
       '<pie-chart data="data" options="options"></pie-chart>' +
@@ -61,117 +65,180 @@ describe('directive', function() {
     $scope.$digest();
   }));
   
-  beforeEach(inject(function($utils) {
-    spyOn($utils, 'getDefaultMargins').andReturn(
-      {top: 20, right: 50, bottom: 30, left: 50}
-    );
-    
-    spyOn($utils, 'draw').andCallThrough();
-  }));
-  
-  it('should call redraw() when data or options change', inject(function($utils) {
+  var svg, content;
+  beforeEach(function() {
     $scope.data = [
-      {label: "one", value: 12.2, color: "red"}, 
-      {label: "two", value: 45, color: "green"},
-      {label: "three", value: 10, color: "blue"},
-      {label: "Fourth series", value: 50, color: "yellow"}
-    ];
+      {label: "CPU", value: 84, color: "#0a182d"}
+    ];   
+    $scope.options = {mode: "gauge", thickness: 5};
     $scope.$apply();
-    expect($utils.draw.callCount).toBe(0);
-      
-    $scope.options = {thickness: 5};
-    $scope.$apply();
-    expect($utils.draw.callCount).toBe(1);
     
-    $scope.options.thickness = 10;
-    $scope.$apply();
-    expect($utils.draw.callCount).toBe(2);
-    
-    $scope.data.shift();
-    $scope.$apply();
-    expect($utils.draw.callCount).toBe(3);
-  }));
+    svg = elm[0].childNodes[0].childNodes[0];
+    content = svg.childNodes[0];
+  });
   
-  describe("content generation", function() {
-    var svg, content;
+  describe("update", function() {
+    beforeEach(inject(function($utils) {
+      spyOn($utils, 'draw').andCallThrough();
+      spyOn($utils, 'updatePaths').andCallThrough();
+    }));
     
-    beforeEach(function() {
+    it("should be called instead of redraw if only data changes", inject(function($utils) {
+      expect($utils.draw.callCount).toBe(0);
+      expect($utils.updatePaths.callCount).toBe(0);
+      
       $scope.data = [
-        {label: "one", value: 12.2, color: "red"}, 
-        {label: "two", value: 45, color: "rgb(10, 24, 45)"},
-        {label: "three", value: 10, color: "rgba(10, 24, 45, 0.7)"},
-        {label: "Fourth series", value: 50, color: "#123456"}
-      ];   
-      $scope.options = {thickness: 5};
+        {label: "CPU", value: 34, color: "#0a182d"}
+      ];
       $scope.$apply();
       
-      svg = elm[0].childNodes[0].childNodes[0];
-      content = svg.childNodes[0];
+      expect($utils.draw.callCount).toBe(0);
+      expect($utils.updatePaths.callCount).toBe(2);
+    }));
+  });
+  
+  describe("arcs", function() {
+    var arcs;
+    beforeEach(function() {
+      arcs = content.childNodes[0].childNodes;
     });
     
-    it('should create the svg and the main group', function() {
-      expect(svg.nodeName).toBe("svg");
-      expect(svg.childNodes.length).toBe(1);
-      expect(content.nodeName).toBe("g");
-    });
-    
-    it("should create two groups : arcs and legend items", function() {
+    it("should be in a single group", function() {
       expect(content.childNodes.length).toBe(2);
-      
       expect(content.childNodes[0].getAttribute("id")).toBe("n3-pie-arcs");
-      expect(content.childNodes[1].getAttribute("id")).toBe("n3-pie-legend");
     });
     
-    it("should create arcs groups", function() {
+    it("should be two", function() {
+      expect(arcs.length).toBe(2);
+    });
+    
+    it("should create arcs paths", function() {
       var arcs = content.childNodes[0];
       
       var expected = [
-        {"class": "arc", "id": "arc_0"},
-        {"class": "arc", "id": "arc_1"},
-        {"class": "arc", "id": "arc_2"},
-        {"class": "arc", "id": "arc_3"}
+        {"class": "arc", "id": "arc_0", "style": "fill: #0a182d; fill-opacity: 0.8;"},
+        {"class": "arc", "id": "arc_1", "style": "fill: white; fill-opacity: 0.8;"}
       ];
       
       expected.forEach(function(d, i) {
+        expect(arcs.childNodes[i].nodeName).toBe("path");
         expect(arcs.childNodes[i].getAttribute("class")).toBe(d["class"]);
         expect(arcs.childNodes[i].getAttribute("id")).toBe(d["id"]);
-        expect(arcs.childNodes[i].getAttribute("style")).toBe(null);
+        expect(arcs.childNodes[i].getAttribute("style").trim()).toBeSameStyleAs(d["style"]);
+      });
+      
+      expected = [
+        "M1.3777276490407723e-14,-225A225,225 0 1,1 -189.97378323795337,-120.56102887027427L-185.75214361044328,-117.88189489537929A220,220 0 1,0 1.3471114790620885e-14,-220Z",
+        "M-189.97378323795337,-120.56102887027427A225,225 0 0,1 -4.133182947122317e-14,-225L-4.0413344371862656e-14,-220A220,220 0 0,0 -185.75214361044328,-117.88189489537929Z"
+      ];
+      
+      waits(500);
+
+      runs(function () {
+        expected.forEach(function(d, i) {
+          expect(arcs.childNodes[i].getAttribute("d").trim()).toBe(d);
+        });
       });
     });
     
-    it("should create a path in each arc group with proper style", function() {
-      var arcs = content.childNodes[0];
+    it("should not be sorted", function() {
+      $scope.data = [
+        {label: "CPU", value: 4, color: "#0a182d"}
+      ];
+      $scope.$apply();
+      
       
       var expected = [
-        {"type": "path", "style": "fill: red; fill-opacity: 0.8;"},
-        {"type": "path", "style": "fill: rgb(10, 24, 45); fill-opacity: 0.8;"},
-        {"type": "path", "style": "fill: rgba(10, 24, 45, 0.7); fill-opacity: 0.8;"},
-        {"type": "path", "style": "fill: #123456; fill-opacity: 0.8;"}
+        "M1.3777276490407723e-14,-225A225,225 0 0,1 55.955224612092316,-217.931211253942L54.71177517626804,-213.08829544829882A220,220 0 0,0 1.3471114790620885e-14,-220Z",
+        "M55.955224612092316,-217.931211253942A225,225 0 1,1 1.58508314961305e-13,-225L1.5498590796216488e-13,-220A220,220 0 1,0 54.71177517626804,-213.08829544829882Z"
       ];
       
-      var p = function(i) {return arcs.childNodes[i].childNodes[0];};
-      expected.forEach(function(d, i) {
-        expect(p(i).nodeName).toBe(d.type);
-        expect(p(i).getAttribute("style").trim()).toBeSameStyleAs(d.style);
-      });
-    });
-    
-    it("should create a path in each arc group with proper data", function() {
-      var arcs = content.childNodes[0];
-      
-      var expected = [
-        "M-222.82279198005287,-89.16279142228608A240,240 0 0,1 -122.59052896853278,-206.32877212646648L-120.03655961502169,-202.03025604049841A235,235 0 0,0 -218.18065048046842,-87.30523326765511Z",
-        "M106.77390401186753,214.9403019958437A240,240 0 0,1 -222.82279198005287,-89.16279142228608L-218.18065048046842,-87.30523326765511A235,235 0 0,0 104.54944767828695,210.46237903759697Z",
-        "M-122.59052896853278,-206.32877212646648A240,240 0 0,1 -4.408728476930471e-14,-240L-4.3168799669944197e-14,-235A235,235 0 0,0 -120.03655961502169,-202.03025604049841Z",
-        "M1.469576158976824e-14,-240A240,240 0 0,1 106.77390401186753,214.9403019958437L104.54944767828695,210.46237903759697A235,235 0 0,0 1.43895998899814e-14,-235Z"
-      ];
-      
-      var p = function(i) {return arcs.childNodes[i].childNodes[0];};
-      expected.forEach(function(d, i) {
-        expect(p(i).getAttribute("d").trim()).toBe(d);
+      // The transition lasts 250ms...
+      waits(300);
+
+      svg = elm[0].childNodes[0].childNodes[0];
+      content = svg.childNodes[0];
+      arcs = content.childNodes[0].childNodes;
+      runs(function () {
+        expected.forEach(function(d, i) {
+          expect(arcs[i].getAttribute("d").trim()).toBe(d);
+        });
       });
     });
   });
+  
+  describe("legend items", function() {
+    it("should be in a single legend group", function() {
+      expect(content.childNodes.length).toBe(2);
+      expect(content.childNodes[1].getAttribute("id")).toBe("n3-pie-legend");
+    });
+    
+    it("should be two : one title and one value", function() {
+      var legendItems = content.childNodes[1].childNodes;
+      
+      expect(legendItems.length).toBe(2);
+    });
+    
+    describe("title", function() {
+      var title;
+      beforeEach(function() {
+        title = content.childNodes[1].childNodes[0];
+      });
+      
+      it("should be a stylized text", function() {
+        expect(title.nodeName).toBe("text");
+        expect(title.getAttribute("text-anchor")).toBe("middle");
+        expect(title.getAttribute("style").trim()).toBeSameStyleAs(
+          "font-size: 20px; fill: #0a182d; fill-opacity: 0.8;"
+        );
+      });
+      
+      it("should be classed as legend-title", function() {
+        expect(title.getAttribute("class")).toBe("legend-title");
+      });
+      
+      it("should contain the series label", function() {
+        expect(title.textContent).toBe("CPU");
+      });
+    });
+    
+    describe("value", function() {
+      var value;
+      beforeEach(function() {
+        value = content.childNodes[1].childNodes[1];
+      });
+      
+      it("should be a stylized text", function() {
+        expect(value.nodeName).toBe("text");
+        expect(value.getAttribute("text-anchor")).toBe("middle");
+        expect(value.getAttribute("style").trim()).toBeSameStyleAs(
+          "font-size: 215px; fill: #0a182d; fill-opacity: 0.8;"
+        );
+      });
+      
+      it("should be classed as legend-value", function() {
+        expect(value.getAttribute("class")).toBe("legend-value");
+      });
+      
+      it("should contain the series label", function() {
+        expect(value.textContent).toBe("84");
+      });
+      
+      it("should be updated", function() {
+        $scope.data = [
+          {label: "CPU", value: 34, color: "#0a182d"}
+        ];
+        $scope.$apply();
+        
+        expect(content.childNodes[1].childNodes[1].textContent).toBe("34");
+      });
+      
+    });
+    
+  });
+  
+  
+  
 });
 describe("legend", function() {
   
@@ -242,41 +309,52 @@ describe("legend", function() {
       expect(legendItems.length).toBe(4);
     });
     
-    it("should be colored", function() {
+    it("should be stylized", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        {transform: "translate(0, -30)", style: "fill: #ff0000; fill-opacity: 0.8;"},
-        {transform: "translate(0, -15)", style: "fill: #0a182d; fill-opacity: 0.8;"},
-        {transform: "translate(0, 0)", style: "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;"},
-        {transform: "translate(0, 15)", style: "fill: #123456; fill-opacity: 0.8;"}
+        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8;",
+        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8;",
+        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;",
+        "font-family: monospace; fill: #123456; fill-opacity: 0.8;"
       ];
       
       expected.forEach(function(d, i) {
-        expect(legendItems[i].nodeName).toBe("g");
-        expect(legendItems[i].getAttribute("transform")).toBe(d.transform);
-        expect(legendItems[i].getAttribute("style").trim()).toBeSameStyleAs(d.style);
+        expect(legendItems[i].getAttribute("style").trim()).toBeSameStyleAs(d);
       });
     });
     
-    it("should own text elements", function() {
+    it("should be translated", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "one ........... 12.2", style: "font-family: monospace;"},
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "two ............. 45", style: "font-family: monospace;"},
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "three ........... 10", style: "font-family: monospace;"},
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "Fourth series ... 50", style: "font-family: monospace;"}
+        "translate(0, -20)",
+        "translate(0, -6.666666666666668)", // this should be better
+        "translate(0, 6.666666666666664)",
+        "translate(0, 20)"
       ];
       
-      var p = function(i) {return legendItems[i].childNodes[0];};
+      expected.forEach(function(d, i) {
+        expect(legendItems[i].nodeName).toBe("text");
+        expect(legendItems[i].getAttribute("transform")).toBe(d);
+      });
+    });
+    
+    it("should be text elements", function() {
+      var legendItems = content.childNodes[1].childNodes;
+      
+      var expected = [
+        {"text-anchor": "middle", content: "one ........... 12.2"},
+        {"text-anchor": "middle", content: "two ............. 45"},
+        {"text-anchor": "middle", content: "three ........... 10"},
+        {"text-anchor": "middle", content: "Fourth series ... 50"}
+      ];
+      
+      var p = function(i) {return legendItems[i];};
       expected.forEach(function(d, i) {
         expect(p(i).nodeName).toBe("text");
-        expect(p(i).getAttribute("x")).toBe(d.x);
-        expect(p(i).getAttribute("y")).toBe(d.y);
         expect(p(i).textContent).toBe(d.content);
         expect(p(i).getAttribute("text-anchor")).toBe(d["text-anchor"]);
-        expect(p(i).getAttribute("style").trim()).toBeSameStyleAs(d.style);
       });
     });
 
@@ -285,24 +363,24 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expectedLegends = [
-        "fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
-        "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
-        "fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
+        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
+        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
+        "font-family: monospace; fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
       ];
       
       var expectedArcs = [
-        {id: "arc_0", style: "opacity: 1;"},
-        {id: "arc_1", style: "opacity: 0.4;"},
-        {id: "arc_2", style: "opacity: 0.4;"},
-        {id: "arc_3", style: "opacity: 0.4;"}
+        {id: "arc_0", style: "fill: #ff0000; fill-opacity: 0.8; opacity: 1;"},
+        {id: "arc_1", style: "fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;"},
+        {id: "arc_2", style: "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;"},
+        {id: "arc_3", style: "fill: #123456; fill-opacity: 0.8; opacity: 0.4;"}
       ];
       
-      runs(function () {
-        var e = document.createEvent("MouseEvents");
-        e.initMouseEvent("mouseover");
-        legendItems[0].dispatchEvent(e);
-      });
+      
+      var e = document.createEvent("MouseEvents");
+      e.initMouseEvent("mouseover");
+      legendItems[0].dispatchEvent(e);
+      
       
       // There is a transition we have to wait for.
       // BTW : Jasmine is awesome.
@@ -325,17 +403,17 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expectedLegends = [
-        "fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
-        "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
-        "fill: #123456; fill-opacity: 0.8; opacity: 1;"
+        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; fill: #123456; fill-opacity: 0.8; opacity: 1;"
       ];
       
       var expectedArcs = [
-        {id: "arc_0", style: "opacity: 1;"},
-        {id: "arc_1", style: "opacity: 1;"},
-        {id: "arc_2", style: "opacity: 1;"},
-        {id: "arc_3", style: "opacity: 1;"}
+        {id: "arc_0", style: "fill: #ff0000; fill-opacity: 0.8; opacity: 1;"},
+        {id: "arc_1", style: "fill: #0a182d; fill-opacity: 0.8; opacity: 1;"},
+        {id: "arc_2", style: "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;"},
+        {id: "arc_3", style: "fill: #123456; fill-opacity: 0.8; opacity: 1;"}
       ];
       
       runs(function () {
@@ -361,12 +439,57 @@ describe("legend", function() {
     }));
   })
 });
+describe("misc", function() {
+  describe("looksLikeSameSeries", function() {
+    it("should be false when different amount of series", inject(function($utils) {
+      var newData = [];
+      var oldData = [{label: "foo", value: 42, color: "red"}];
+      
+      expect($utils.looksLikeSameSeries(newData, oldData)).toBeFalsy();
+    }));
+    
+    it("should be true when only the value changed", inject(function($utils) {
+      var oldData = [{label: "foo", value: 42, color: "red"}];
+      var newData = [{label: "foo", value: 37, color: "red"}];
+      
+      expect($utils.looksLikeSameSeries(newData, oldData)).toBeTruthy();
+    }));
+    
+    it("should be false when a label has changed", inject(function($utils) {
+      var oldData = [{label: "foo", value: 42, color: "red"}];
+      var newData = [{label: "bar", value: 42, color: "red"}];
+      
+      expect($utils.looksLikeSameSeries(newData, oldData)).toBeFalsy();
+    }));
+    
+    it("should be false when a color has changed", inject(function($utils) {
+      var oldData = [{label: "bar", value: 42, color: "blue"}];
+      var newData = [{label: "bar", value: 42, color: "red"}];
+      
+      expect($utils.looksLikeSameSeries(newData, oldData)).toBeFalsy();
+    }));
+  });
+});
 describe("options", function() {
   describe("sanitizeOptions", function() {
     it("should handle thickness", inject(function($utils) {
       expect($utils.sanitizeOptions({})).toEqual({thickness: 20});
       
       expect($utils.sanitizeOptions({thickness: "10"})).toEqual({thickness: 10});
+    }));
+    
+    it("should handle gauge mode - default total to 100", inject(function($utils) {
+      expect($utils.sanitizeOptions({mode: "gauge"})).toEqual({
+        mode: "gauge",
+        thickness: 20,
+        total: 100
+      });
+      
+      expect($utils.sanitizeOptions({mode: "gauge", total: "80"})).toEqual({
+        mode: "gauge",
+        thickness: 20,
+        total: 80
+      });
     }));
   });
 });
@@ -407,5 +530,119 @@ describe('size', function() {
     $window.dispatchEvent(e);
     expect($utils.draw.callCount).toBe(3);
   }));
+});
+describe('standard mode', function() {
+  
+  var elm, $scope, isolatedScope;
+  
+  beforeEach(inject(function($rootScope, $compile) {
+    elm = angular.element('<div id="toto">' +
+      '<pie-chart data="data" options="options"></pie-chart>' +
+      '</div>');
+
+    $scope = $rootScope;
+    $compile(elm)($scope);
+    $scope.$digest();
+  }));
+  
+  beforeEach(inject(function($utils) {
+    spyOn($utils, 'getDefaultMargins').andReturn(
+      {top: 20, right: 50, bottom: 30, left: 50}
+    );
+    
+    spyOn($utils, 'draw').andCallThrough();
+  }));
+  
+  it('should call redraw() when data or options change', inject(function($utils) {
+    $scope.data = [
+      {label: "one", value: 12.2, color: "red"}, 
+      {label: "two", value: 45, color: "green"},
+      {label: "three", value: 10, color: "blue"},
+      {label: "Fourth series", value: 50, color: "yellow"}
+    ];
+    $scope.$apply();
+    expect($utils.draw.callCount).toBe(0);
+      
+    $scope.options = {thickness: 5};
+    $scope.$apply();
+    expect($utils.draw.callCount).toBe(1);
+    
+    $scope.options.thickness = 10;
+    $scope.$apply();
+    expect($utils.draw.callCount).toBe(2);
+    
+    // $scope.data.shift();
+    // $scope.$apply();
+    // expect($utils.draw.callCount).toBe(3);
+  }));
+  
+  describe("content generation", function() {
+    var svg, content;
+    
+    beforeEach(function() {
+      $scope.data = [
+        {label: "one", value: 12.2, color: "red"}, 
+        {label: "two", value: 45, color: "rgb(10, 24, 45)"},
+        {label: "three", value: 10, color: "rgba(10, 24, 45, 0.7)"},
+        {label: "Fourth series", value: 50, color: "#123456"}
+      ];   
+      $scope.options = {thickness: 5};
+      $scope.$apply();
+      
+      svg = elm[0].childNodes[0].childNodes[0];
+      content = svg.childNodes[0];
+    });
+    
+    it('should create the svg and the main group', function() {
+      expect(svg.nodeName).toBe("svg");
+      expect(svg.childNodes.length).toBe(1);
+      expect(content.nodeName).toBe("g");
+    });
+    
+    it("should create two groups : arcs and legend items", function() {
+      expect(content.childNodes.length).toBe(2);
+      
+      expect(content.childNodes[0].getAttribute("id")).toBe("n3-pie-arcs");
+      expect(content.childNodes[1].getAttribute("id")).toBe("n3-pie-legend");
+    });
+    
+    it("should create paths with proper style", function() {
+      var arcs = content.childNodes[0];
+      
+      var expected = [
+        {"id": "arc_0", "style": "fill: #ff0000; fill-opacity: 0.8;"},
+        {"id": "arc_1", "style": "fill: #0a182d; fill-opacity: 0.8;"},
+        {"id": "arc_2", "style": "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;"},
+        {"id": "arc_3", "style": "fill: #123456; fill-opacity: 0.8;"}
+      ];
+      
+      expected.forEach(function(d, i) {
+        expect(arcs.childNodes[i].getAttribute("class")).toBe("arc");
+        expect(arcs.childNodes[i].getAttribute("id")).toBe(d.id);
+        expect(arcs.childNodes[i].getAttribute("style").trim()).toBe(d.style);
+      });
+    });
+    
+    it("should create paths with proper data", function() {
+      var arcs = content.childNodes[0];
+      
+      var expected = [
+        "M-222.82279198005287,-89.16279142228608A240,240 0 0,1 -122.59052896853278,-206.32877212646648L-120.03655961502169,-202.03025604049841A235,235 0 0,0 -218.18065048046842,-87.30523326765511Z",
+        "M106.77390401186753,214.9403019958437A240,240 0 0,1 -222.82279198005287,-89.16279142228608L-218.18065048046842,-87.30523326765511A235,235 0 0,0 104.54944767828695,210.46237903759697Z",
+        "M-122.59052896853278,-206.32877212646648A240,240 0 0,1 -4.408728476930471e-14,-240L-4.3168799669944197e-14,-235A235,235 0 0,0 -120.03655961502169,-202.03025604049841Z",
+        "M1.469576158976824e-14,-240A240,240 0 0,1 106.77390401186753,214.9403019958437L104.54944767828695,210.46237903759697A235,235 0 0,0 1.43895998899814e-14,-235Z"
+      ];
+      
+      // The transition lasts 300ms...
+      waits(300);
+
+      runs(function () {
+        expected.forEach(function(d, i) {
+          expect(arcs.childNodes[i].nodeName).toBe("path");
+          expect(arcs.childNodes[i].getAttribute("d").trim()).toBe(d);
+        });
+      });
+    });
+  });
 });
 });

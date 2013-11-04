@@ -67,41 +67,52 @@ describe("legend", function() {
       expect(legendItems.length).toBe(4);
     });
     
-    it("should be colored", function() {
+    it("should be stylized", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        {transform: "translate(0, -30)", style: "fill: #ff0000; fill-opacity: 0.8;"},
-        {transform: "translate(0, -15)", style: "fill: #0a182d; fill-opacity: 0.8;"},
-        {transform: "translate(0, 0)", style: "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;"},
-        {transform: "translate(0, 15)", style: "fill: #123456; fill-opacity: 0.8;"}
+        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8;",
+        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8;",
+        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;",
+        "font-family: monospace; fill: #123456; fill-opacity: 0.8;"
       ];
       
       expected.forEach(function(d, i) {
-        expect(legendItems[i].nodeName).toBe("g");
-        expect(legendItems[i].getAttribute("transform")).toBe(d.transform);
-        expect(legendItems[i].getAttribute("style").trim()).toBeSameStyleAs(d.style);
+        expect(legendItems[i].getAttribute("style").trim()).toBeSameStyleAs(d);
       });
     });
     
-    it("should own text elements", function() {
+    it("should be translated", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "one ........... 12.2", style: "font-family: monospace;"},
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "two ............. 45", style: "font-family: monospace;"},
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "three ........... 10", style: "font-family: monospace;"},
-        {x: "0px", y: "15px", "text-anchor": "middle", content: "Fourth series ... 50", style: "font-family: monospace;"}
+        "translate(0, -20)",
+        "translate(0, -6.666666666666668)", // this should be better
+        "translate(0, 6.666666666666664)",
+        "translate(0, 20)"
       ];
       
-      var p = function(i) {return legendItems[i].childNodes[0];};
+      expected.forEach(function(d, i) {
+        expect(legendItems[i].nodeName).toBe("text");
+        expect(legendItems[i].getAttribute("transform")).toBe(d);
+      });
+    });
+    
+    it("should be text elements", function() {
+      var legendItems = content.childNodes[1].childNodes;
+      
+      var expected = [
+        {"text-anchor": "middle", content: "one ........... 12.2"},
+        {"text-anchor": "middle", content: "two ............. 45"},
+        {"text-anchor": "middle", content: "three ........... 10"},
+        {"text-anchor": "middle", content: "Fourth series ... 50"}
+      ];
+      
+      var p = function(i) {return legendItems[i];};
       expected.forEach(function(d, i) {
         expect(p(i).nodeName).toBe("text");
-        expect(p(i).getAttribute("x")).toBe(d.x);
-        expect(p(i).getAttribute("y")).toBe(d.y);
         expect(p(i).textContent).toBe(d.content);
         expect(p(i).getAttribute("text-anchor")).toBe(d["text-anchor"]);
-        expect(p(i).getAttribute("style").trim()).toBeSameStyleAs(d.style);
       });
     });
 
@@ -110,24 +121,24 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expectedLegends = [
-        "fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
-        "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
-        "fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
+        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
+        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
+        "font-family: monospace; fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
       ];
       
       var expectedArcs = [
-        {id: "arc_0", style: "opacity: 1;"},
-        {id: "arc_1", style: "opacity: 0.4;"},
-        {id: "arc_2", style: "opacity: 0.4;"},
-        {id: "arc_3", style: "opacity: 0.4;"}
+        {id: "arc_0", style: "fill: #ff0000; fill-opacity: 0.8; opacity: 1;"},
+        {id: "arc_1", style: "fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;"},
+        {id: "arc_2", style: "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;"},
+        {id: "arc_3", style: "fill: #123456; fill-opacity: 0.8; opacity: 0.4;"}
       ];
       
-      runs(function () {
-        var e = document.createEvent("MouseEvents");
-        e.initMouseEvent("mouseover");
-        legendItems[0].dispatchEvent(e);
-      });
+      
+      var e = document.createEvent("MouseEvents");
+      e.initMouseEvent("mouseover");
+      legendItems[0].dispatchEvent(e);
+      
       
       // There is a transition we have to wait for.
       // BTW : Jasmine is awesome.
@@ -150,17 +161,17 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expectedLegends = [
-        "fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
-        "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
-        "fill: #123456; fill-opacity: 0.8; opacity: 1;"
+        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; fill: #123456; fill-opacity: 0.8; opacity: 1;"
       ];
       
       var expectedArcs = [
-        {id: "arc_0", style: "opacity: 1;"},
-        {id: "arc_1", style: "opacity: 1;"},
-        {id: "arc_2", style: "opacity: 1;"},
-        {id: "arc_3", style: "opacity: 1;"}
+        {id: "arc_0", style: "fill: #ff0000; fill-opacity: 0.8; opacity: 1;"},
+        {id: "arc_1", style: "fill: #0a182d; fill-opacity: 0.8; opacity: 1;"},
+        {id: "arc_2", style: "fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;"},
+        {id: "arc_3", style: "fill: #123456; fill-opacity: 0.8; opacity: 1;"}
       ];
       
       runs(function () {
