@@ -18,7 +18,7 @@ describe('size', function() {
     $scope.$digest();
   }));
 
-  it('should update when $window resize', inject(function($window, $utils) {
+  xit('should update when $window resize', inject(function($window, $utils) {
     $scope.data = [
       {label: "one", value: 12.2, color: "red"}, 
       {label: "two", value: 45, color: "green"},

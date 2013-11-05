@@ -140,7 +140,7 @@ describe("gauge mode", function() {
         expect(title.nodeName).toBe("text");
         expect(title.getAttribute("text-anchor")).toBe("middle");
         expect(title.getAttribute("style").trim()).toBeSameStyleAs(
-          "font-size: 20px; fill: #0a182d; fill-opacity: 0.8;"
+          "font-size: 55px; fill: #0a182d; fill-opacity: 0.8;"
         );
       });
       
@@ -163,7 +163,7 @@ describe("gauge mode", function() {
         expect(value.nodeName).toBe("text");
         expect(value.getAttribute("text-anchor")).toBe("middle");
         expect(value.getAttribute("style").trim()).toBeSameStyleAs(
-          "font-size: 215px; fill: #0a182d; fill-opacity: 0.8;"
+          "font-size: 110px; fill: #0a182d; fill-opacity: 0.8;"
         );
       });
       
@@ -182,6 +182,15 @@ describe("gauge mode", function() {
         $scope.$apply();
         
         expect(content.childNodes[1].childNodes[1].textContent).toBe("34");
+      });
+      
+      it("should be allow suffix", function() {
+        $scope.data = [
+          {label: "RAM", value: 34, suffix: "%", color: "#0a182d"}
+        ];
+        $scope.$apply();
+        
+        expect(content.childNodes[1].childNodes[1].textContent).toBe("34%");
       });
       
     });

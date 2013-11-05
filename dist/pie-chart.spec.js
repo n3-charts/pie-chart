@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-04
+/*! pie-chart - v1.0.0 - 2013-11-05
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 'use strict';
@@ -189,7 +189,7 @@ describe("gauge mode", function() {
         expect(title.nodeName).toBe("text");
         expect(title.getAttribute("text-anchor")).toBe("middle");
         expect(title.getAttribute("style").trim()).toBeSameStyleAs(
-          "font-size: 20px; fill: #0a182d; fill-opacity: 0.8;"
+          "font-size: 55px; fill: #0a182d; fill-opacity: 0.8;"
         );
       });
       
@@ -212,7 +212,7 @@ describe("gauge mode", function() {
         expect(value.nodeName).toBe("text");
         expect(value.getAttribute("text-anchor")).toBe("middle");
         expect(value.getAttribute("style").trim()).toBeSameStyleAs(
-          "font-size: 215px; fill: #0a182d; fill-opacity: 0.8;"
+          "font-size: 110px; fill: #0a182d; fill-opacity: 0.8;"
         );
       });
       
@@ -231,6 +231,15 @@ describe("gauge mode", function() {
         $scope.$apply();
         
         expect(content.childNodes[1].childNodes[1].textContent).toBe("34");
+      });
+      
+      it("should be allow suffix", function() {
+        $scope.data = [
+          {label: "RAM", value: 34, suffix: "%", color: "#0a182d"}
+        ];
+        $scope.$apply();
+        
+        expect(content.childNodes[1].childNodes[1].textContent).toBe("34%");
       });
       
     });
@@ -313,10 +322,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8;",
-        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8;",
-        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;",
-        "font-family: monospace; fill: #123456; fill-opacity: 0.8;"
+        "font-family: monospace; font-size: 22px; fill: #ff0000; fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: #0a182d; fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: #123456; fill-opacity: 0.8;"
       ];
       
       expected.forEach(function(d, i) {
@@ -513,7 +522,7 @@ describe('size', function() {
     $scope.$digest();
   }));
 
-  it('should update when $window resize', inject(function($window, $utils) {
+  xit('should update when $window resize', inject(function($window, $utils) {
     $scope.data = [
       {label: "one", value: 12.2, color: "red"}, 
       {label: "two", value: 45, color: "green"},
