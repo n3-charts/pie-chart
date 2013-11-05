@@ -71,10 +71,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8;",
-        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8;",
-        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;",
-        "font-family: monospace; fill: #123456; fill-opacity: 0.8;"
+        "font-family: monospace; font-size: 22px; fill: #ff0000; fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: #0a182d; fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: #123456; fill-opacity: 0.8;"
       ];
       
       expected.forEach(function(d, i) {

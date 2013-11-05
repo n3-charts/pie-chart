@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-04
+/*! pie-chart - v1.0.0 - 2013-11-05
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 'use strict';
@@ -322,10 +322,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8;",
-        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8;",
-        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;",
-        "font-family: monospace; fill: #123456; fill-opacity: 0.8;"
+        "font-family: monospace; font-size: 22px; fill: #ff0000; fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: #0a182d; fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8;",
+        "font-family: monospace; font-size: 22px; fill: #123456; fill-opacity: 0.8;"
       ];
       
       expected.forEach(function(d, i) {

@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-04
+/*! pie-chart - v1.0.0 - 2013-11-05
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
@@ -177,7 +177,7 @@ updateRegularLegend: function(svg, data, dimensions, options) {
   var radius = this.getRadius(dimensions);
   var availableWidth = radius - options.thickness;
   
-  var legendHalfHeight = data.length*Math.max(12, availableWidth/10);
+  var legendHalfHeight = data.length*availableWidth/10;
   
   var scale = d3.scale.linear()
     .range([-legendHalfHeight, legendHalfHeight])
