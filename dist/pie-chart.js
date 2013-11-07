@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-05
+/*! pie-chart - v1.0.0 - 2013-11-07
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
@@ -13,31 +13,25 @@ angular.module('n3-pie-chart', ['n3-pie-utils'])
       dimensions.height = element[0].parentElement.offsetHeight || 500;
     };
 
-    var update = function() {
+    var update = function(data, options) {
       $utils
-        .updatePaths(svg, $scope.data, dim, $scope.options)
-        .updateLegend(svg, $scope.data, dim, $scope.options)
+        .updatePaths(svg, data, dim, options)
+        .updateLegend(svg, data, dim, options)
       ;
     };
 
-    var hard_update = function() {
+    var hard_update = function(data, options) {
       $utils.clean(element[0]);
       updateDimensions(dim);
-      draw(dim);
+      draw(data, options, dim);
     };
 
-    var draw = function(dimensions) {
-      var data = $scope.data;
-      var options = $scope.options;
-
+    var draw = function(data, options, dimensions) {
       if (!data || !options) {
         return;
       }
 
       options = $utils.sanitizeOptions(options);
-      data = data.concat(); // this avoids calling again the $watchers since
-                            // data is changed by the pie layout...
-
 
       svg = $utils.bootstrap(element[0], dimensions);
 
@@ -50,15 +44,18 @@ angular.module('n3-pie-chart', ['n3-pie-utils'])
     };
 
     $scope.$watch('data', function(newValue, oldValue) {
-      $utils.addDataForGauge(newValue, $scope.options);
+      newValue = $utils.addDataForGauge(newValue, $scope.options);
 
       if (svg) {
-        update();
+        update(newValue, $scope.options);
       } else {
-        hard_update();
+        hard_update(newValue, $scope.options);
       }
     }, true);
-    $scope.$watch('options', hard_update, true);
+    $scope.$watch('options', function(newValue) {
+      var data = $utils.addDataForGauge($scope.data, newValue);
+      hard_update(data, newValue);
+    }, true);
   };
 
   return {
@@ -140,19 +137,6 @@ getTools: function(dimensions, options) {
   }
   
   return {pie: pieLayout, arc: arc};
-},
-
-addDataForGauge: function(data, options) {
-  if (!options || options.mode !== "gauge") {
-    return;
-  }
-  
-  if (data.length === 1) {
-    data.push({value: options.total - data[0].value, color: "white", __isComplement: true});
-  } else if (data.length === 2 && data[1].__isComplement === true) {
-    data[1].value = options.total - data[0].value;
-  }
-  
 },
 
 addLegend: function(svg) {
@@ -308,6 +292,18 @@ getLegendLabel: function(label, value, totalLength) {
   return dots.join("");
 },
 
+addDataForGauge: function(data, options) {
+  if (!options || options.mode !== "gauge" || data.length !== 1) {
+    return data;
+  }
+  
+  data = data.concat();
+  
+  data.push({value: options.total - data[0].value, color: "white", __isComplement: true});
+
+  return data;
+},
+
 getDefaultMargins: function() {
   return {top: 10, right: 10, bottom: 10, left: 10};
 },
@@ -336,7 +332,6 @@ bootstrap: function(element, dimensions) {
 
 getRadius: function(dimensions) {
   var d = dimensions;
-
   return Math.min(
     (d.width - d.left - d.right),
     (d.height - d.top - d.bottom)

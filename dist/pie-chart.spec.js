@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-05
+/*! pie-chart - v1.0.0 - 2013-11-07
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 'use strict';
@@ -77,6 +77,14 @@ describe("gauge mode", function() {
     content = svg.childNodes[0];
   });
   
+  describe("data array", function() {
+    it("should be left untouched", function() {
+      expect($scope.data).toEqual([
+        {label: "CPU", value: 84, color: "#0a182d"}
+      ]);
+    });
+  });
+  
   describe("update", function() {
     beforeEach(inject(function($utils) {
       spyOn($utils, 'draw').andCallThrough();
@@ -89,6 +97,14 @@ describe("gauge mode", function() {
       
       $scope.data = [
         {label: "CPU", value: 34, color: "#0a182d"}
+      ];
+      $scope.$apply();
+      
+      expect($utils.draw.callCount).toBe(0);
+      expect($utils.updatePaths.callCount).toBe(1);
+      
+      $scope.data = [
+        {label: "CPU", value: 42, color: "#0a182d"}
       ];
       $scope.$apply();
       
@@ -128,8 +144,12 @@ describe("gauge mode", function() {
       });
       
       expected = [
-        "M1.3777276490407723e-14,-225A225,225 0 1,1 -189.97378323795337,-120.56102887027427L-185.75214361044328,-117.88189489537929A220,220 0 1,0 1.3471114790620885e-14,-220Z",
-        "M-189.97378323795337,-120.56102887027427A225,225 0 0,1 -4.133182947122317e-14,-225L-4.0413344371862656e-14,-220A220,220 0 0,0 -185.75214361044328,-117.88189489537929Z"
+        "M1.3777276490407723e-14,-225A225,225 0 1,1 -189.97378323795337," +
+        "-120.56102887027427L-185.75214361044328,-117.88189489537929A220," +
+        "220 0 1,0 1.3471114790620885e-14,-220Z",
+        "M-189.97378323795337,-120.56102887027427A225,225 0 0,1 -4.13318" +
+        "2947122317e-14,-225L-4.0413344371862656e-14,-220A220,220 0 0,0 -" +
+        "185.75214361044328,-117.88189489537929Z"
       ];
       
       waits(500);
@@ -149,8 +169,12 @@ describe("gauge mode", function() {
       
       
       var expected = [
-        "M1.3777276490407723e-14,-225A225,225 0 0,1 55.955224612092316,-217.931211253942L54.71177517626804,-213.08829544829882A220,220 0 0,0 1.3471114790620885e-14,-220Z",
-        "M55.955224612092316,-217.931211253942A225,225 0 1,1 1.58508314961305e-13,-225L1.5498590796216488e-13,-220A220,220 0 1,0 54.71177517626804,-213.08829544829882Z"
+        "M1.3777276490407723e-14,-225A225,225 0 0,1 55.955224612092316," +
+        "-217.931211253942L54.71177517626804,-213.08829544829882A220,220" +
+        " 0 0,0 1.3471114790620885e-14,-220Z",
+        "M55.955224612092316,-217.931211253942A225,225 0 1,1 1.58508314" +
+        "961305e-13,-225L1.5498590796216488e-13,-220A220,220 0 1,0 54.71" +
+        "177517626804,-213.08829544829882Z"
       ];
       
       // The transition lasts 250ms...
@@ -337,10 +361,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        "translate(0, -20)",
-        "translate(0, -6.666666666666668)", // this should be better
-        "translate(0, 6.666666666666664)",
-        "translate(0, 20)"
+        "translate(0, -88)",
+        "translate(0, -29.333333333333336)", // this is ugly...
+        "translate(0, 29.33333333333333)",
+        "translate(0, 88)"
       ];
       
       expected.forEach(function(d, i) {
@@ -372,10 +396,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expectedLegends = [
-        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
-        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
-        "font-family: monospace; fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
+        "font-family: monospace; font-size: 22px; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; font-size: 22px; fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
+        "font-family: monospace; font-size: 22px; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
+        "font-family: monospace; font-size: 22px; fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
       ];
       
       var expectedArcs = [
@@ -412,10 +436,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expectedLegends = [
-        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
-        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
-        "font-family: monospace; fill: #123456; fill-opacity: 0.8; opacity: 1;"
+        "font-family: monospace; font-size: 22px; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; font-size: 22px; fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; font-size: 22px; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; font-size: 22px; fill: #123456; fill-opacity: 0.8; opacity: 1;"
       ];
       
       var expectedArcs = [
