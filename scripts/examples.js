@@ -1,7 +1,7 @@
 angular.module('demo.examples', ["apojop"])
 
 .controller('ExamplesCtrl', function($scope) {
-  //mixpanel.track("Examples");
+  mixpanel.track("Examples");
   
   var colors = d3.scale.category10();
   

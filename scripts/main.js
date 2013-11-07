@@ -8,7 +8,7 @@ angular.module('demo.main', ['n3-pie-chart', 'demo.examples'])
 }])
 
 .controller('HomeCtrl', function($scope) {
-  // mixpanel.track("Home");
+  mixpanel.track("Home");
   
   var colors = d3.scale.category10();
   $scope.data = [
