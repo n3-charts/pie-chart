@@ -334,7 +334,6 @@ bootstrap: function(element, dimensions) {
 
 getRadius: function(dimensions) {
   var d = dimensions;
-
   return Math.min(
     (d.width - d.left - d.right),
     (d.height - d.top - d.bottom)

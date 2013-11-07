@@ -1,5 +1,9 @@
 pie-chart.sublime-workspace
 pie-chart.sublime-project
 
+<<<<<<< HEAD
+=======
+bower_components/
+>>>>>>> 93396e3... Initial import
 node_modules/
 coverage/
