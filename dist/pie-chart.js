@@ -32,12 +32,6 @@ angular.module('n3-pie-chart', ['n3-pie-utils'])
       }
 
       options = $utils.sanitizeOptions(options);
-<<<<<<< HEAD
-      // data = data.concat(); // this avoids calling again the $watchers since
-                            // data is changed by the pie layout...
-
-=======
->>>>>>> develop
 
       svg = $utils.bootstrap(element[0], dimensions);
 
