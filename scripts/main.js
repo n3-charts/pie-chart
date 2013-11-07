@@ -1,4 +1,4 @@
-angular.module('demo.main', ['n3-pie-chart'])
+angular.module('demo.main', ['n3-pie-chart', 'demo.examples'])
 
 .config(['$routeProvider', function config($routeProvider) {
   $routeProvider
@@ -15,13 +15,13 @@ angular.module('demo.main', ['n3-pie-chart'])
     {label: "one", value: 12.2, color: colors(0)}, 
     {label: "two", value: 45, color: colors(1)},
     {label: "three", value: 10, color: colors(2)},
-    {label: "Fourth series", value: 50, color: colors(3)}
+    {label: "four", value: 50, color: colors(3)}
   ];
 
   $scope.options = {thickness: 10};
   
   $scope.gauge_data = [
-    {label: "CPU", value: 75, color: "steelblue"}
+    {label: "Awesomeness", value: 75, suffix: "%", color: "steelblue"}
   ];
   $scope.gauge_options = {thickness: 5, mode: "gauge", total: 100};
   

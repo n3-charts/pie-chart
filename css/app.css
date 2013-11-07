@@ -43,6 +43,12 @@ body {
   height: 50px;
 }
 
+.unit-1 {
+  height: 10px;
+  width: 10px;
+  float: left;
+}
+
 /* THUMBNAIL */
 .mini-chart {
   height: 100px;
@@ -51,7 +57,7 @@ body {
 
 .thumbnail {
   box-shadow: 6px 6px 10px #DDD;
-  height: 600px;
+  height: 300px;
   padding: 10px;
   border: 1px solid #CECECE;
 }
