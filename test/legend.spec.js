@@ -86,10 +86,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expected = [
-        "translate(0, -20)",
-        "translate(0, -6.666666666666668)", // this should be better
-        "translate(0, 6.666666666666664)",
-        "translate(0, 20)"
+        "translate(0, -88)",
+        "translate(0, -29.333333333333336)", // this is ugly...
+        "translate(0, 29.33333333333333)",
+        "translate(0, 88)"
       ];
       
       expected.forEach(function(d, i) {
@@ -121,10 +121,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expectedLegends = [
-        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
-        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
-        "font-family: monospace; fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
+        "font-family: monospace; font-size: 22px; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; font-size: 22px; fill: #0a182d; fill-opacity: 0.8; opacity: 0.4;",
+        "font-family: monospace; font-size: 22px; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 0.4;",
+        "font-family: monospace; font-size: 22px; fill: #123456; fill-opacity: 0.8; opacity: 0.4;"
       ];
       
       var expectedArcs = [
@@ -161,10 +161,10 @@ describe("legend", function() {
       var legendItems = content.childNodes[1].childNodes;
       
       var expectedLegends = [
-        "font-family: monospace; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
-        "font-family: monospace; fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
-        "font-family: monospace; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
-        "font-family: monospace; fill: #123456; fill-opacity: 0.8; opacity: 1;"
+        "font-family: monospace; font-size: 22px; fill: #ff0000; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; font-size: 22px; fill: #0a182d; fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; font-size: 22px; fill: rgba(10, 24, 45, 0.70196); fill-opacity: 0.8; opacity: 1;",
+        "font-family: monospace; font-size: 22px; fill: #123456; fill-opacity: 0.8; opacity: 1;"
       ];
       
       var expectedArcs = [
