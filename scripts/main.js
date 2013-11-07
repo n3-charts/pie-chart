@@ -26,7 +26,7 @@ angular.module('demo.main', ['n3-pie-chart', 'demo.examples'])
   $scope.gauge_options = {thickness: 5, mode: "gauge", total: 100};
   
   setInterval(function() {
-    $scope.gauge_data[0].value = parseInt(Math.random()*100);
+    $scope.gauge_data[0].value = parseInt((0.9 + Math.random()*0.1)*100);
     $scope.$apply();
   }, 2000);
   

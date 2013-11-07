@@ -52,7 +52,6 @@ body {
 /* THUMBNAIL */
 .mini-chart {
   height: 100px;
-  border: 1px solid #CECECE;
 }
 
 .thumbnail {
@@ -64,6 +63,7 @@ body {
 
 .thumbnail .chart {
   height: 100%;
+  width: 300px;
 }
 
 .thumbnail .options {

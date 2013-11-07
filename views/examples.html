@@ -1,16 +1,27 @@
+<div class='unit-100'>
+  <h3>Live updates</h3>
+  <h3 class='subheader'>The directive can easily be used in an elegant dashboard. It detects changes on data values and updates the gauge. As simple as that.</h3>
+</div>
+
+<div class='units-row'>
+  <div class="unit-20 mini-chart" ng-repeat='example in miniExamples'>
+    <pie-chart data='example.data' options='example.options'></pie-chart>
+  </div>
+</div>
+
 <div class='units-row' ng-repeat='example in examples'>
   <div class='unit-100'>
     <h3>{{example.label}}</h3>
     <h3 class='subheader'>{{example.description}}</h3>
   </div>
   <div class='units-row units-split thumbnail'>
-    <div class='unit-60 chart'>
+    <div class='unit-40 chart'>
       <pie-chart data='example.data' options='example.options'></pie-chart>
     </div>
-    <div class='unit-40 options'>
+    <div class='unit-60 options'>
       <pre ng-bind-html-unsafe='"$scope.options = " + (example.options | pretty:0:"levels") + ";"'></pre>
       <pre ng-bind-html-unsafe='"$scope.data = " + (example.data | pretty:1) + ";"'></pre>
-      <input type="range" min="1" max="100" ng-model="example.options.thickness"/>
+      <input type="range" min="1" max="200" ng-model="example.options.thickness"/>
     </div>
   </div>
 </div>
