@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-07
+/*! pie-chart - v1.0.0 - 2013-11-08
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
@@ -204,9 +204,12 @@ updateGaugeLegend: function(svg, data, dimensions, options) {
     return;
   }
   
-  svg.selectAll("#n3-pie-legend > *").remove();
+  var legend = svg.selectAll("#n3-pie-legend");
   
-  svg.selectAll("#n3-pie-legend")
+  var title = legend.selectAll(".legend-title")
+    .data(data.filter(function(s) {return !s.__isComplement;}));
+  
+  title.enter()
     .append("text")
     .attr({
       "class": "legend-title",
@@ -215,13 +218,19 @@ updateGaugeLegend: function(svg, data, dimensions, options) {
     })
     .style({
       "font-size": Math.max(size/2, 12) + "px",
-      "fill": data[0].color,
+      "fill": function(d) {return d.color;},
       "fill-opacity": 0.8
     })
-    .text(data[0].label)
-    ;
+  ;
   
-  svg.selectAll("#n3-pie-legend")
+  title.text(function(d) {return d.label;});
+  
+  title.exit().remove();
+  
+  var value = legend.selectAll(".legend-value")
+    .data(data.filter(function(s) {return !s.__isComplement;}));
+  
+  value.enter()
     .append("text")
     .attr({
       "class": "legend-value",
@@ -230,11 +239,15 @@ updateGaugeLegend: function(svg, data, dimensions, options) {
     })
     .style({
       "font-size": size + "px",
-      "fill": data[0].color,
+      "fill": function(d) {return d.color;},
       "fill-opacity": 0.8
     })
-    .text(data[0].value + (data[0].suffix || ''))
-    ;
+  ;
+  
+  value
+    .text(function(d) {return d.value + (d.suffix || '');});
+  
+  value.exit().remove();
 },
 
 getLegendLabelFunction: function(availableWidth) {
