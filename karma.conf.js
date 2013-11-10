@@ -3,8 +3,6 @@ module.exports = function(config) {
     basePath: '',
 
     files: [
-      JASMINE,
-      JASMINE_ADAPTER,
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/d3/d3.js',
@@ -12,18 +10,21 @@ module.exports = function(config) {
       'dist/pie-chart.spec.js'
     ],
 
+    frameworks: ["jasmine"],
+
+    plugins: ["karma-jasmine", "karma-phantomjs-launcher", "karma-coverage"],
+
     preprocessors: {
-      'dist/pie-chart.min.js': 'coverage'
+      'dist/pie-chart.min.js': ['coverage']
     },
 
     exclude: [],
     
     coverageReporter: {
-      type : 'text-summary',
-      dir : 'coverage/'
+      type : 'text-summary'
     },
 
-    reporters: ['dots', 'coverage'],
+    reporters: ['progress', 'coverage'],
 
     port: 9876,
 
