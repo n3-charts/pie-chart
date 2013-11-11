@@ -32,6 +32,11 @@ body {
 
 /* HOME */
 
+#invisible {
+  height: 1px;
+  width: 1px;
+}
+
 .preview-chart {
   height: 200px;
   border: 1px solid #CECECE;
