@@ -107,7 +107,7 @@ describe("gauge mode", function() {
 
       runs(function () {
         expected.forEach(function(d, i) {
-          expect(arcs.childNodes[i].getAttribute("d").trim()).toBe(d);
+          expect(arcs.childNodes[i].getAttribute("d")).toBeSamePathAs(d);
         });
       });
     });
@@ -136,7 +136,7 @@ describe("gauge mode", function() {
       arcs = content.childNodes[0].childNodes;
       runs(function () {
         expected.forEach(function(d, i) {
-          expect(arcs[i].getAttribute("d").trim()).toBe(d);
+          expect(arcs[i].getAttribute("d")).toBeSamePathAs(d);
         });
       });
     });
