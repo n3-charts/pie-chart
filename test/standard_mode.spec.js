@@ -106,7 +106,7 @@ describe('standard mode', function() {
       runs(function () {
         expected.forEach(function(d, i) {
           expect(arcs.childNodes[i].nodeName).toBe("path");
-          expect(arcs.childNodes[i].getAttribute("d").trim()).toBe(d);
+          expect(arcs.childNodes[i].getAttribute("d")).toBeSamePathAs(d);
         });
       });
     });

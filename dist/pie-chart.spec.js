@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2013-11-08
+/*! pie-chart - v1.0.0 - 2013-11-11
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2013 n3-charts  Licensed ,  */
 'use strict';
@@ -43,7 +43,69 @@ describe('n3-piechart', function() {
         }
 
         return true;
+      },
+      
+      toBeSamePathAs: function(expected) {
+        var actual = this.actual;
+        var notText = this.isNot ? " not" : "";
+
+        var errorMsg = "";
+
+        this.message = function () {
+          return "Expected " + actual + notText + " to be same path as " + expected + " (" + errorMsg + ")";
+        };
+        
+        if (!actual) {
+          return false;
+        }
+        
+        var getInstructions = function(path) {
+          var a = [];
+          
+          var sp = path.split(/([A-Z])/g);
+          
+          for (var i = 1; i < sp.length; i+=2) {
+            a.push({type: sp[i], values: sp[i+1].split(/[\s,]/)});
+          }
+          
+          return a;
+        };
+        
+        var expectedArray = getInstructions(expected);
+        var actualArray = getInstructions(actual);
+        
+        if (expectedArray.length !== actualArray.length) {
+          return false;
+        }
+        
+        for (var i = 0; i < expectedArray.length; i++) {
+          var a = expectedArray[i];
+          var b = actualArray[i];
+          
+          if (a.type !== b.type) {
+            errorMsg = a.type + " !== " + b.type;
+            return false;
+          }
+          
+          if (a.values.length !== b.values.length) {
+            errorMsg = "different values length";
+            return false;
+          }
+          
+          for (var j = 0; j < a.values.length; j++) {
+            var vA = a.values[j];
+            var vB = b.values[j];
+            
+            if (parseInt(vA, 10) !== parseInt(vB, 10) && vA !== "" && vB !== "") {
+              errorMsg = vA + " !== " + vB;
+              return false;
+            }
+          }
+        }
+        
+        return true;
       }
+      
     });
   });
 
@@ -156,7 +218,7 @@ describe("gauge mode", function() {
 
       runs(function () {
         expected.forEach(function(d, i) {
-          expect(arcs.childNodes[i].getAttribute("d").trim()).toBe(d);
+          expect(arcs.childNodes[i].getAttribute("d")).toBeSamePathAs(d);
         });
       });
     });
@@ -185,7 +247,7 @@ describe("gauge mode", function() {
       arcs = content.childNodes[0].childNodes;
       runs(function () {
         expected.forEach(function(d, i) {
-          expect(arcs[i].getAttribute("d").trim()).toBe(d);
+          expect(arcs[i].getAttribute("d")).toBeSamePathAs(d);
         });
       });
     });
@@ -672,7 +734,7 @@ describe('standard mode', function() {
       runs(function () {
         expected.forEach(function(d, i) {
           expect(arcs.childNodes[i].nodeName).toBe("path");
-          expect(arcs.childNodes[i].getAttribute("d").trim()).toBe(d);
+          expect(arcs.childNodes[i].getAttribute("d")).toBeSamePathAs(d);
         });
       });
     });
