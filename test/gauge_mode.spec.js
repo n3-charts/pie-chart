@@ -5,33 +5,46 @@ describe("gauge mode", function() {
     );
   }));
   
-  var elm, $scope, isolatedScope;
+  var elm, elmWithComplement, $scope, isolatedScope;
   beforeEach(inject(function($rootScope, $compile) {
     elm = angular.element('<div id="toto">' +
       '<pie-chart data="data" options="options"></pie-chart>' +
       '</div>');
+    elmWithComplement = angular.element('<div id="totoWithComplement">' +
+      '<pie-chart data="dataWithComplement" options="options"></pie-chart>' +
+      '</div>'
+    );
 
     $scope = $rootScope;
     $compile(elm)($scope);
+    $compile(elmWithComplement)($scope);
     $scope.$digest();
   }));
   
-  var svg, content;
+  var svg, svgWithComplement, content, contentWithComplement;
   beforeEach(function() {
     $scope.data = [
       {label: "CPU", value: 84, color: "#0a182d"}
-    ];   
+    ];
+    $scope.dataWithComplement = [
+      {label: "CPU", value: 84, color: "#0a182d", complementBrightness: 90}
+    ];
     $scope.options = {mode: "gauge", thickness: 5};
     $scope.$apply();
-    
+
     svg = elm[0].childNodes[0].childNodes[0];
     content = svg.childNodes[0];
+    svgWithComplement = elmWithComplement[0].childNodes[0].childNodes[0];
+    contentWithComplement = svgWithComplement.childNodes[0];
   });
   
   describe("data array", function() {
     it("should be left untouched", function() {
       expect($scope.data).toEqual([
         {label: "CPU", value: 84, color: "#0a182d"}
+      ]);
+      expect($scope.dataWithComplement).toEqual([
+        {label: "CPU", value: 84, color: "#0a182d", complementBrightness: 90}
       ]);
     });
   });
@@ -65,35 +78,51 @@ describe("gauge mode", function() {
   });
   
   describe("arcs", function() {
-    var arcs;
+    var arcs, arcsWithComplement;
     beforeEach(function() {
       arcs = content.childNodes[0].childNodes;
+      arcsWithComplement = contentWithComplement.childNodes[0].childNodes;
     });
     
     it("should be in a single group", function() {
       expect(content.childNodes.length).toBe(2);
+      expect(contentWithComplement.childNodes.length).toBe(2);
       expect(content.childNodes[0].getAttribute("id")).toBe("n3-pie-arcs");
+      expect(contentWithComplement.childNodes[0].getAttribute("id")).toBe("n3-pie-arcs");
     });
     
     it("should be two", function() {
       expect(arcs.length).toBe(2);
+      expect(arcsWithComplement.length).toBe(2);
     });
     
     it("should create arcs paths", function() {
       var arcs = content.childNodes[0];
-      
+      var arcsWithComplement = contentWithComplement.childNodes[0];
+
       var expected = [
         {"class": "arc", "id": "arc_0", "style": "fill: #0a182d; fill-opacity: 0.8;"},
         {"class": "arc", "id": "arc_1", "style": "fill: white; fill-opacity: 0.8;"}
       ];
-      
+      var expectedWithComplement = [
+        {"class": "arc", "id": "arc_0", "style": "fill: #0a182d; fill-opacity: 0.8;"},
+        {"class": "arc", "id": "arc_1", "style": "fill: #e7e8ea; fill-opacity: 0.8;"}
+      ];
+
       expected.forEach(function(d, i) {
         expect(arcs.childNodes[i].nodeName).toBe("path");
         expect(arcs.childNodes[i].getAttribute("class")).toBe(d["class"]);
         expect(arcs.childNodes[i].getAttribute("id")).toBe(d["id"]);
         expect(arcs.childNodes[i].getAttribute("style").trim()).toBeSameStyleAs(d["style"]);
       });
-      
+
+      expectedWithComplement.forEach(function(d, i) {
+        expect(arcsWithComplement.childNodes[i].nodeName).toBe("path");
+        expect(arcsWithComplement.childNodes[i].getAttribute("class")).toBe(d["class"]);
+        expect(arcsWithComplement.childNodes[i].getAttribute("id")).toBe(d["id"]);
+        expect(arcsWithComplement.childNodes[i].getAttribute("style").trim()).toBeSameStyleAs(d["style"]);
+      });
+
       expected = [
         "M1.3777276490407723e-14,-225A225,225 0 1,1 -189.97378323795337," +
         "-120.56102887027427L-185.75214361044328,-117.88189489537929A220," +

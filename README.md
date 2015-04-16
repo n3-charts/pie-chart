@@ -40,6 +40,10 @@ $scope.gauge_data = [
 ];
 ```
 
++ `complementBrightness` : optional (disabled by default). Expects a number between 0 and 100. If set, it will take the color of the chart, increase the brightness by a given percentage and use the new color for the complement.
++ `colorComplement` : optional (default is "white"). Defines the color of the complement. Will be ignored if `complementBrightness` is set.
+
+
 #### Options
 Options must be an object. Depending whether you want a pie/donut or a gauge, additional settings can be required.
 
