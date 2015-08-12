@@ -25,6 +25,7 @@
       function link($scope, element, attrs, ctrl) {
         var dim = $utils.getDefaultMargins();
         var svg;
+        var promise;
 
         var updateDimensions = function(dimensions) {
           dimensions.width = element[0].parentElement.offsetWidth || 900;
@@ -58,6 +59,33 @@
             .addLegend(svg)
             .updateLegend(svg, data, dimensions, options);
         };
+
+        var redraw = function(){
+          var redrawData = $utils.addDataForGauge($scope.data, $scope.options);
+
+          $utils.clean(element[0]);
+          updateDimensions(dim);
+          svg = $utils.bootstrap(element[0], dim);
+
+          $utils
+            .draw(svg)
+            .updatePaths(svg, redrawData, dim, $scope.options)
+            .addLegend(svg)
+            .updateLegend(svg, redrawData, dim, $scope.options);
+
+        };
+
+        var resizeWindow = function(){
+          if (promise) {
+            $timeout.cancel(promise);
+          }
+
+          promise = $timeout(redraw, 1);
+
+          return promise;
+        };
+
+        $window.addEventListener('resize', resizeWindow);
 
         $scope.$watch('data', function(newValue, oldValue) {
           newValue = $utils.addDataForGauge(newValue, $scope.options);
