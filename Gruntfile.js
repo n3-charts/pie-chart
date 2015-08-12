@@ -26,7 +26,7 @@ module.exports = function(grunt) {
       files: ['lib/**/*.js', 'test/*.spec.js'],
       tasks: ['jshint', 'concat', 'uglify', 'karma:continuous'],
       options: {
-        livereload: true,
+        livereload: true
       }
     },
 
@@ -86,7 +86,8 @@ module.exports = function(grunt) {
 
     jshint: {
       options: {
-        jshintrc: '.jshintrc'
+        jshintrc: '.jshintrc',
+        reporter: require('jshint-stylish')
       },
       gruntfile: {
         src: 'Gruntfile.js'
