@@ -1,6 +1,6 @@
-/*! pie-chart - v1.0.0 - 2013-11-11
+/*! pie-chart - v1.0.0 - 2015-04-16
 * https://github.com/n3-charts/pie-chart
-* Copyright (c) 2013 n3-charts  Licensed ,  */
+* Copyright (c) 2015 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
 
 .directive('pieChart', ['$utils', function($utils) {
@@ -305,14 +305,39 @@ getLegendLabel: function(label, value, totalLength) {
   return dots.join("");
 },
 
+increase_brightness: function (hex, percent) {
+  hex = hex.replace(/^\s*#|\s*$/g, '');
+
+  if(hex.length == 3){
+    hex = hex.replace(/(.)/g, '$1$1');
+  }
+
+  var r = parseInt(hex.substr(0, 2), 16),
+      g = parseInt(hex.substr(2, 2), 16),
+      b = parseInt(hex.substr(4, 2), 16);
+
+  return '#' +
+      ((0|(1<<8) + r + (256 - r) * percent / 100).toString(16)).substr(1) +
+      ((0|(1<<8) + g + (256 - g) * percent / 100).toString(16)).substr(1) +
+      ((0|(1<<8) + b + (256 - b) * percent / 100).toString(16)).substr(1);
+},
+
 addDataForGauge: function(data, options) {
   if (!options || options.mode !== "gauge" || data.length !== 1) {
     return data;
   }
   
   data = data.concat();
-  
-  data.push({value: options.total - data[0].value, color: "white", __isComplement: true});
+
+  var colorComplement = "white";
+
+  if (data[0].hasOwnProperty("complementBrightness")) {
+    colorComplement = this.increase_brightness(data[0].color, data[0].complementBrightness);
+  } else if (data[0].hasOwnProperty("colorComplement")) {
+    colorComplement = data[0].colorComplement;
+  }
+
+  data.push({value: options.total - data[0].value, color: colorComplement, __isComplement: true});
 
   return data;
 },
