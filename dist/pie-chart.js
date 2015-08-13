@@ -1,4 +1,4 @@
-/*! pie-chart - v1.0.0 - 2015-04-16
+/*! pie-chart - v1.0.0 - 2015-08-13
 * https://github.com/n3-charts/pie-chart
 * Copyright (c) 2015 n3-charts  Licensed ,  */
 angular.module('n3-pie-chart', ['n3-pie-utils'])
