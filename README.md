@@ -22,7 +22,7 @@ A pie chart is called using this syntax :
 The pie chart directives needs two attributes : `data` and `options`. If one is missing, nothing happens.
 
 #### Data
-Your data be an array. Depending whether you wan a pie/dout or a gauge, the array can contain at least two rows, or only one.
+Your data must be an array. Depending whether you wan a pie/donut or a gauge, the array can contain at least two rows, or only one.
 
 ##### Standard
 ```js
@@ -39,6 +39,10 @@ $scope.gauge_data = [
   {label: "CPU", value: 75, suffix: "%", color: "steelblue"}
 ];
 ```
+
++ `complementBrightness` : optional (disabled by default). Expects a number between 0 and 100. If set, it will take the color of the chart, increase the brightness by a given percentage and use the new color for the complement.
++ `colorComplement` : optional (default is "white"). Defines the color of the complement. Will be ignored if `complementBrightness` is set.
+
 
 #### Options
 Options must be an object. Depending whether you want a pie/donut or a gauge, additional settings can be required.
