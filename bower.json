@@ -1,8 +1,8 @@
 {
   "name": "pie-chart",
   "main": "dist/pie-chart.min.js",
-  "version": "1.0.0",
-  "homepage": "https://github.com/n3-charts/pie-chart",
+  "version": "1.0.1",
+  "homepage": "https://github.com/10clouds/pie-chart",
   "authors": [
     "lorem--ipsum <vaporzub@gmail.com>"
   ],
