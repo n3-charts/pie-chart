@@ -22,7 +22,7 @@ A pie chart is called using this syntax :
 The pie chart directives needs two attributes : `data` and `options`. If one is missing, nothing happens.
 
 #### Data
-Your data must be an array. Depending whether you wan a pie/donut or a gauge, the array can contain at least two rows, or only one.
+Your data must be an array. Depending whether you want a pie/donut or a gauge, the array can contain at least two rows, or only one.
 
 ##### Standard
 ```js
